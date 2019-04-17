@@ -92,4 +92,64 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 * 技术分析：
   * response
   * 文件下载
+* 下载方式
+  * 超链接下载
+  * 编码下载：通过servlet完成
+    * 设置文件的mime类型
+      * 获取文件类型：String mimeType = context.getMimeType(文件名)
+      * 设置文件类型：response.setContentType(mimeType);
+    * 设置下载头信息 content-disposition
+      * response.setHeader("content-disposition","attachment;filename="+文件名称);
+    * 提供流(以流的方式返回给浏览器)
+      * 要先从本地获取一个输入流，再给他输出出去
+      * response.getOutputStream();
+ * DownloadServlet.java
+ ```(java)
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//文件下载
+		//1.设置文献下载的mime类型
+		//1.1获取下载文件的名称
+		String filename = request.getParameter("name");
+		//1.2获取文件类型
+		ServletContext context = this.getServletContext();
+		String mimeType = context.getMimeType(filename);
+		
+		//2.设置下载的头信息
+		response.setHeader("content-disposition", "attchment;filename="+filename);
+		//3.对拷流
+		//3.1获取输入流,以流的方式返回一个文件
+		InputStream is = context.getResourceAsStream("/download/"+filename);
+		//3.2获取输出流，向浏览器写东西
+		ServletOutputStream os = response.getOutputStream();
+		//3.3对拷流
+		int len = -1;
+		byte[] b = new byte[1024];
+		while((len = is.read(b)) != -1) {
+			os.write(b,0,len);
+		}
+		os.close();
+		is.close();
+	}
+ ```
+ * 可以用commons-io-1.4jar包省略部分代码
+ ```(jar)
+ 		//3.3对拷流
+		/*
+		 * int len = -1;
+		byte[] b = new byte[1024];
+		while((len = is.read(b)) != -1) {
+			os.write(b,0,len);
+		}
+		 */
+		
+		IOUtils.copy(is, os);
+ ```
+ * download.html
+ ```(html)
+ <body>
+	<a href="/rr/download?name=download1.doc">download1.doc</a>
+	<a href="/rr/download?name=download2.jpg">download2.jpg</a>
+</body>
+```
+  
   
