@@ -1,5 +1,5 @@
 # request_reponse
-## 例一：重定向
+## 例一：重定向（设置响应头）
 com.my.a_response.a_location
 * 问题描述： index.html直接跳转到服务器servlet1(/Loc1),servlet1中doget()response重定向到servlet2(Loc2)
 * index.html
@@ -31,7 +31,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	}
 
 ```
-## 定时刷新
+## 例二：定时刷新（设置响应头）
 * 问题描述：从index.html上跳转到refresh1.html上，然后3秒后跳转到refresh2.html上，要求用js数秒
 * 方案一：设置头refresh
 * 方案二：html的meta标签
@@ -67,6 +67,26 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	}
 </script>
 </html>
+```
+## 例三：让浏览器显示表格
+* 问题描述：编写Printservlet.java设置响应体，获得向客户端进行数据输出的流对象，在浏览器上显示表格
+* 有中文输出，设置输出数据的编码格式（否则乱码）
+* 
+```(html)
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//设置处理相应的中文乱码
+		response.setContentType("text/html;charset=utf-8");
+		//response.setHeader("content-type", "text/html;charset=utf-8");
+		//打印表格
+		//获取字符流
+		PrintWriter w = response.getWriter();
+		w.print("<table border='1'><tr>");
+		w.print("<td>用户名：</td>");
+		w.print("<td>tom</td>");
+		w.print("<tr><td>密码：</td>");
+		w.print("<td>123</td>");
+		w.print("</tr><table>");
+	}
 ```
 ## 案例1 文件下载案例
 * 技术分析：
