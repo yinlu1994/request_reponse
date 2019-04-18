@@ -151,5 +151,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	<a href="/rr/download?name=download2.jpg">download2.jpg</a>
 </body>
 ```
-  
+## 扩展：通过response生成验证码
+* 验证码：作用：防止暴力攻击
+*
   
