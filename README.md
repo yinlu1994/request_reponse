@@ -153,11 +153,19 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 ```
 ## 扩展：通过response生成验证码
 * 验证码：作用：防止暴力攻击
+* 问题描述，生成验证码，并通过每次点击重新生成验证码
 * code.html
 ```(html)
 <body>
-	<img alt="验证码" src="/rr/codes" title="看不清楚换一张">
+	<!-- this代表img -->
+	<img alt="验证码" src="/rr/codes" title="看不清楚换一张" onclick="changeImg(this)">
 </body>
+<script type="text/javascript">
+	function changeImg(obj){
+		//操作img的src属性
+		obj.src="/rr/codes?i="+Math.random();
+	}
+</script>
 ```
 * codeServlet.java(在web.xml里配置为/codes)
 ```(java)
