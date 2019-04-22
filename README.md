@@ -103,6 +103,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
     * 提供流(以流的方式返回给浏览器)
       * 要先从本地获取一个输入流，再给他输出出去
       * response.getOutputStream();
+    * 注意：当下载链接有中文时，中文乱码，资源找不到,常见的浏览器需要提供文件名称的UTF-8编码，对于火狐浏览器来说需要提供文件名称的Base64编码,用rr中的recourse中的DownLoadUtils.java
  * DownloadServlet.java
  ```(java)
  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -110,12 +111,16 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		//1.设置文献下载的mime类型
 		//1.1获取下载文件的名称
 		String filename = request.getParameter("name");
+                //注意中文乱码
+                filename = new String(filename.getBytes("iso8859-1"),"utf-8")
 		//1.2获取文件类型
 		ServletContext context = this.getServletContext();
 		String mimeType = context.getMimeType(filename);
 		
 		//2.设置下载的头信息
-		response.setHeader("content-disposition", "attchment;filename="+filename);
+		//response.setHeader("content-disposition", "attchment;filename="+filename);
+		//不兼容火狐
+		//response.setHeader("content-disposition", "attchment;filename="+URLEncoder.encode(filename,"utf-8"));
 		//3.对拷流
 		//3.1获取输入流,以流的方式返回一个文件
 		InputStream is = context.getResourceAsStream("/download/"+filename);
